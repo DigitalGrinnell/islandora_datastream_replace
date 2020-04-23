@@ -116,7 +116,7 @@ function islandora_datastream_replace_batch_operation($namespace, $source, $dsid
       // save the extension
       $exten=pathinfo($fil, PATHINFO_EXTENSION);
       // get pieces of filename
-      $xparts=explode('_',$xbase); 
+      $xparts=explode('_',$xbase);
       //find namespace equivalent
       $nstest=$xparts[0];
       $dsidtest=$xparts[2];
@@ -126,7 +126,7 @@ function islandora_datastream_replace_batch_operation($namespace, $source, $dsid
         continue;
       }
       print "\n file = $xbase \n";
-      //get number part of pid 
+      //get number part of pid
       $pidnum=$xparts[1];
       print "pidnum=$pidnum \n";
       if ($nstest!=$namespace) {
@@ -136,7 +136,7 @@ function islandora_datastream_replace_batch_operation($namespace, $source, $dsid
       // assemble filename that is like pid
       $pidname=$nstest.'_'.$pidnum.'_'.$dsid;
       //  assemble pid from filename parts
-      $pid=$nstest.':'.$pidnum;      
+      $pid=$nstest.':'.$pidnum;
       // prepare tuque and islandora includes
       module_load_include('inc', 'islandora', 'includes/mimetype.utils');
       module_load_include('inc', 'islandora', 'utilities');
@@ -151,6 +151,10 @@ function islandora_datastream_replace_batch_operation($namespace, $source, $dsid
         $object[$dsid]->setContentFromFile($source_directory);
         $success = TRUE;
         rename($source_directory,"$source_directory".".used");
+        // Load idu.drush.inc from the idu module.
+        module_load_include('inc', 'idu', 'idu.drush');
+        // run the iduF UpdateFromMODS command for this PID
+        idu_drush_fix_UpdateFromMODS($pid);
       }
       else {
         $success = FALSE;
